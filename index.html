@@ -50,9 +50,10 @@
             background: var(--card-bg);
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 50px;
+            padding: 40px; /* Reduced padding slightly for mobile */
             position: relative;
             overflow: hidden;
+            min-height: 800px; /* Ensure consistent height */
         }
 
         /* Decorative Header Bar */
@@ -67,13 +68,13 @@
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         h1 {
             color: var(--primary-dark);
             margin: 0;
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 700;
             transition: color 0.3s;
         }
@@ -105,7 +106,53 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        /* Calculator Panel */
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .nav-tab {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-tab:hover {
+            color: var(--primary-light);
+        }
+
+        .nav-tab.active {
+            color: var(--primary-dark);
+            border-bottom-color: var(--primary-dark);
+        }
+
+        /* View Content */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- View 1: Quarterly Styles --- */
+
         .calculator-panel {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -198,7 +245,6 @@
             color: #d97706;
         }
 
-        /* Chart Rows */
         .chart-grid {
             display: flex;
             flex-direction: column;
@@ -217,7 +263,6 @@
             border: 2px solid transparent;
         }
 
-        /* Active State Highlight */
         .bar-row.active-tier {
             background-color: #fffbeb;
             border-color: var(--accent-gold);
@@ -226,7 +271,6 @@
             z-index: 10;
         }
 
-        /* Next Goal Highlight */
         .bar-row.next-goal {
             border: 2px dashed #cbd5e1;
             background-color: #f8fafc;
@@ -243,7 +287,6 @@
             font-weight: bold;
         }
 
-        /* Y-Axis Label (Bonus) */
         .bonus-label {
             text-align: right;
             font-weight: 700;
@@ -256,7 +299,6 @@
             transition: color 0.3s;
         }
 
-        /* The Bar */
         .bar-track {
             background: #f1f5f9;
             height: 40px;
@@ -282,20 +324,11 @@
             position: relative;
         }
         
-        /* Highlight Top Tier */
-        .top-tier .bar-fill {
+        .top-tier .bar-fill, .bar-row.active-tier .bar-fill {
             background: linear-gradient(90deg, #fbbf24, #d97706);
         }
-        .top-tier .bonus-label {
+        .top-tier .bonus-label, .bar-row.active-tier .bonus-label {
             color: #d97706 !important;
-        }
-
-        /* Active Tier Text Color Change */
-        .bar-row.active-tier .bonus-label {
-            color: #d97706 !important;
-        }
-        .bar-row.active-tier .bar-fill {
-            background: linear-gradient(90deg, #fbbf24, #d97706);
         }
 
         .fyc-threshold {
@@ -304,89 +337,174 @@
             font-weight: 500;
         }
 
-        /* Home Run Bonus Badge */
-        .homerun-badge {
-            margin-top: 40px;
-            background: linear-gradient(135deg, var(--text-main), var(--primary-dark));
+        /* --- View 2: Annual Styles --- */
+
+        .recruitment-tracker {
+            background: #fff;
+            border: 2px dashed #cbd5e1;
             border-radius: 16px;
             padding: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transition: all 0.5s ease;
             position: relative;
-            overflow: hidden;
+            margin-bottom: 30px;
         }
 
-        .homerun-badge.active {
-            background: linear-gradient(135deg, var(--accent-gold), #d97706);
-            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .homerun-badge.active .homerun-title,
-        .homerun-badge.active .homerun-desc,
-        .homerun-badge.active .homerun-amount,
-        .homerun-badge.active .homerun-icon {
-            color: #fff;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .homerun-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .homerun-icon {
-            font-size: 32px;
-            color: var(--accent-gold);
-            transition: color 0.3s;
-        }
-
-        .homerun-title {
+        .tracker-title {
             font-size: 18px;
             font-weight: bold;
-            margin-bottom: 4px;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tracker-inputs {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .progress-container {
+            height: 50px;
+            background: #f1f5f9;
+            border-radius: 25px;
+            position: relative;
+            margin: 40px 0 20px 0;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #34d399, #059669);
+            border-radius: 25px;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .milestones {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .milestone {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 2px;
+            background: rgba(255,255,255,0.8);
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .milestone-label {
+            position: absolute;
+            top: -28px;
+            font-size: 14px;
+            color: #64748b;
+            font-weight: bold;
+            white-space: nowrap;
+            background: #fff;
+            padding: 0 4px;
+            border-radius: 4px;
         }
         
-        .homerun-desc {
+        .milestone-pct {
+            position: absolute;
+            bottom: -28px;
+            font-size: 12px;
+            color: #059669;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .quarters-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quarter-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .quarter-card:hover, .quarter-card:focus-within {
+            border-color: var(--primary-light);
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .q-label {
             font-size: 14px;
-            color: #bae6fd;
-        }
-
-        .homerun-right {
-            text-align: right;
-        }
-
-        .homerun-amount {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--accent-gold);
-            transition: color 0.3s;
-        }
-
-        .homerun-status {
-            font-size: 14px;
-            color: #fff;
-            background: rgba(255,255,255,0.25);
-            padding: 4px 12px;
-            border-radius: 20px;
-            margin-top: 5px;
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #64748b;
+            margin-bottom: 8px;
             font-weight: bold;
         }
 
-        .homerun-badge.active .homerun-status {
-            opacity: 1;
-            transform: translateY(0);
-            background: #10b981; /* Success Green */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .q-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .q-bonus {
+            font-size: 16px;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .q-status {
+            font-size: 10px;
+            height: 15px;
+            margin-top: 2px;
+        }
+
+        .annual-summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .annual-summary-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .sum-row {
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .grand-total {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+            color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
         .footer-note {
@@ -396,39 +514,17 @@
             color: #64748b;
         }
 
-        /* Responsive */
         @media (max-width: 600px) {
-            .calculator-panel {
-                grid-template-columns: 1fr;
-            }
-            .total-display, .gap-display {
-                margin-top: 10px;
-            }
-            .bar-row.next-goal::after {
-                content: '🎯';
-                right: 5px;
-                background: transparent;
-            }
-            .homerun-badge {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            .homerun-right {
-                text-align: left;
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .homerun-status {
-                margin-top: 0;
-            }
+            .calculator-panel { grid-template-columns: 1fr; }
+            .total-display, .gap-display { margin-top: 10px; }
+            .quarters-grid { grid-template-columns: 1fr 1fr; }
+            .grand-total, .final-annual-bonus { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .bar-row.next-goal::after { content: '🎯'; right: 5px; background: transparent; }
         }
 
     </style>
 </head>
-<body class="theme-ca"> <!-- Default Theme -->
+<body class="theme-ca">
 
 <div class="chart-container">
     <header>
@@ -442,56 +538,133 @@
         </div>
     </header>
 
-    <!-- Calculator Section -->
-    <div class="calculator-panel">
-        <div class="input-group">
-            <label id="label-input1"><i class="fa-solid fa-user"></i> 個人季核實 FYC</label>
-            <input type="number" id="input-1" placeholder="輸入金額" oninput="calculateBonus()">
+    <!-- NAVIGATION TABS -->
+    <div class="nav-tabs">
+        <div class="nav-tab active" onclick="switchView('quarterly')" id="tab-quarterly">
+            <i class="fa-solid fa-chart-simple"></i> 季獎金試算
         </div>
-        <div class="input-group">
-            <label id="label-input2"><i class="fa-solid fa-user-plus"></i> 被增員者 FYC (自動 50%)</label>
-            <input type="number" id="input-2" placeholder="輸入金額" oninput="calculateBonus()">
-            <div id="hint-calc" style="font-size: 12px; color: #64748b; text-align: right; margin-top: 2px;">
-                (換算後: <span id="val-calc-display" style="color: var(--accent-gold); font-weight: bold;">$0</span>)
-            </div>
-        </div>
-        <div class="total-display">
-            <div class="total-label" id="label-total">個人季專案 FYC</div>
-            <div class="total-value" id="total-val">$0</div>
-        </div>
-        <!-- GAP DISPLAY -->
-        <div class="gap-display" id="gap-box">
-            <div class="gap-label">距離下一門檻</div>
-            <div class="gap-value" id="gap-val">加油!</div>
-            <div class="gap-subtext" id="gap-subtext"></div>
+        <div class="nav-tab" onclick="switchView('annual')" id="tab-annual">
+            <i class="fa-solid fa-calendar-check"></i> 年度與增員模擬
         </div>
     </div>
 
-    <div class="chart-grid" id="chart-grid">
-        <!-- Header -->
-        <div class="bar-row" style="margin-bottom: 5px; padding: 0 10px;">
-            <div style="text-align: right; color: #64748b; font-size: 14px;">季獎金</div>
-            <div style="padding-left: 10px; color: #64748b; font-size: 14px;">達成進度</div>
-            <div style="color: #64748b; font-size: 14px;">門檻標準</div>
+    <!-- VIEW 1: QUARTERLY CALCULATOR -->
+    <div id="view-quarterly" class="view-section active">
+        <div class="calculator-panel">
+            <div class="input-group">
+                <label id="label-input1"><i class="fa-solid fa-user"></i> 個人季核實 FYC</label>
+                <input type="number" id="input-1" placeholder="輸入金額" oninput="calculateBonus()">
+            </div>
+            <div class="input-group">
+                <label id="label-input2"><i class="fa-solid fa-user-plus"></i> 被增員者 FYC (自動 50%)</label>
+                <input type="number" id="input-2" placeholder="輸入金額" oninput="calculateBonus()">
+                <div id="hint-calc" style="font-size: 12px; color: #64748b; text-align: right; margin-top: 2px;">
+                    (換算後: <span id="val-calc-display" style="color: var(--accent-gold); font-weight: bold;">$0</span>)
+                </div>
+            </div>
+            <div class="total-display">
+                <div class="total-label" id="label-total">個人季專案 FYC</div>
+                <div class="total-value" id="total-val">$0</div>
+            </div>
+            <!-- GAP DISPLAY -->
+            <div class="gap-display" id="gap-box">
+                <div class="gap-label">距離下一門檻</div>
+                <div class="gap-value" id="gap-val">加油!</div>
+                <div class="gap-subtext" id="gap-subtext"></div>
+            </div>
+        </div>
+
+        <div class="chart-grid" id="chart-grid">
+            <!-- Header -->
+            <div class="bar-row" style="margin-bottom: 5px; padding: 0 10px;">
+                <div style="text-align: right; color: #64748b; font-size: 14px;">季獎金</div>
+                <div style="padding-left: 10px; color: #64748b; font-size: 14px;">達成進度</div>
+                <div style="color: #64748b; font-size: 14px;">門檻標準</div>
+            </div>
+            <!-- Rows injected by JS -->
+        </div>
+    </div>
+
+    <!-- VIEW 2: ANNUAL SIMULATOR -->
+    <div id="view-annual" class="view-section">
+        
+        <!-- Recruitment Tracker -->
+        <div class="recruitment-tracker">
+            <div class="tracker-title">
+                <span><i class="fa-solid fa-users-viewfinder"></i> 年度增員加碼獎金追蹤</span>
+            </div>
+            
+            <div class="tracker-inputs">
+                <label style="font-size: 14px; font-weight: bold; color: #334155;">年度累積增員積分：</label>
+                <input type="number" id="input-points" placeholder="例如: 12" style="padding: 8px; width: 100px; border: 2px solid #e2e8f0; border-radius: 8px; text-align: center; font-weight: bold;" oninput="calculateAnnual()">
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="recruit-progress"></div>
+                <div class="milestones">
+                    <div class="milestone" style="left: 0%"><span class="milestone-label">0</span></div>
+                    <div class="milestone" style="left: 20%"><span class="milestone-label">6</span><span class="milestone-pct">20%</span></div>
+                    <div class="milestone" style="left: 40%"><span class="milestone-label">12</span><span class="milestone-pct">40%</span></div>
+                    <div class="milestone" style="left: 60%"><span class="milestone-label">18</span><span class="milestone-pct">60%</span></div>
+                    <div class="milestone" style="left: 80%"><span class="milestone-label">24</span><span class="milestone-pct">80%</span></div>
+                    <div class="milestone" style="left: 100%"><span class="milestone-label">30</span><span class="milestone-pct">100%</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Annual Simulator Grid -->
+        <div class="tracker-title" style="color: var(--primary-dark); margin-top: 30px;">
+            <span><i class="fa-solid fa-calculator"></i> 年度獎金模擬試算 (請輸入每季專案 FYC)</span>
         </div>
         
-        <!-- Rows will be injected by JS -->
-    </div>
-
-    <!-- Home Run Bonus -->
-    <div class="homerun-badge" id="homerun-badge">
-        <div class="homerun-left">
-            <i class="fa-solid fa-baseball-bat-ball homerun-icon"></i>
-            <div>
-                <div class="homerun-title">超級全壘打獎金</div>
-                <div class="homerun-desc" id="homerun-desc">四季皆達標 (至少領取起領級距)</div>
+        <div class="quarters-grid">
+            <div class="quarter-card">
+                <div class="q-label">第一季 (Q1)</div>
+                <input type="number" class="q-input" id="q1-fyc" placeholder="專案 FYC" oninput="calculateAnnual()">
+                <div class="q-bonus" id="q1-bonus">$0</div>
+                <div class="q-status" id="q1-status" style="color: #ef4444;">未達標</div>
+            </div>
+            <div class="quarter-card">
+                <div class="q-label">第二季 (Q2)</div>
+                <input type="number" class="q-input" id="q2-fyc" placeholder="專案 FYC" oninput="calculateAnnual()">
+                <div class="q-bonus" id="q2-bonus">$0</div>
+                <div class="q-status" id="q2-status" style="color: #ef4444;">未達標</div>
+            </div>
+            <div class="quarter-card">
+                <div class="q-label">第三季 (Q3)</div>
+                <input type="number" class="q-input" id="q3-fyc" placeholder="專案 FYC" oninput="calculateAnnual()">
+                <div class="q-bonus" id="q3-bonus">$0</div>
+                <div class="q-status" id="q3-status" style="color: #ef4444;">未達標</div>
+            </div>
+            <div class="quarter-card">
+                <div class="q-label">第四季 (Q4)</div>
+                <input type="number" class="q-input" id="q4-fyc" placeholder="專案 FYC" oninput="calculateAnnual()">
+                <div class="q-bonus" id="q4-bonus">$0</div>
+                <div class="q-status" id="q4-status" style="color: #ef4444;">未達標</div>
             </div>
         </div>
-        <div class="homerun-right">
-            <div class="homerun-amount">+ $15,000</div>
-            <div class="homerun-status" id="homerun-status">
-                <i class="fa-solid fa-check-circle"></i> 本季達標
+
+        <table class="annual-summary-table">
+            <tr class="sum-row">
+                <td>季獎金總和 (A)</td>
+                <td style="text-align: right;" id="sum-quarterly">$0</td>
+            </tr>
+            <tr>
+                <td>超級全壘打獎金 (B) <span style="font-size: 12px; color: #64748b;">(四季皆達標)</span></td>
+                <td style="text-align: right; color: var(--accent-gold); font-weight: bold;" id="sum-homerun">$0</td>
+            </tr>
+            <tr>
+                <td>年度增員加碼獎金 (C) <br><span style="font-size: 12px; color: #059669;">((A + B) x <span id="recruit-multiplier-display">0%</span>)</span></td>
+                <td style="text-align: right; color: #059669; font-weight: bold;" id="sum-recruit">$0</td>
+            </tr>
+        </table>
+
+        <div class="grand-total">
+            <div>
+                <div style="font-size: 14px; opacity: 0.9;">預估年度總領獎金 (A+B+C)</div>
+                <div style="font-size: 12px; opacity: 0.7;">* 不含原始 FYC 佣金，僅計算專案獎勵</div>
             </div>
+            <div style="font-size: 32px; font-weight: 700;" id="sum-grand">$0</div>
         </div>
     </div>
 
@@ -556,7 +729,6 @@
     // 1. Initialize & Render Rows
     function renderChart() {
         const grid = document.getElementById('chart-grid');
-        // Keep header, remove rows
         const header = grid.firstElementChild;
         grid.innerHTML = '';
         grid.appendChild(header);
@@ -568,6 +740,7 @@
             const row = document.createElement('div');
             row.className = `bar-row ${isTop ? 'top-tier' : ''}`;
             row.setAttribute('data-threshold', t.limit);
+            row.setAttribute('data-bonus', t.bonus); 
             
             row.innerHTML = `
                 <div class="bonus-label">$${formatMoney(t.bonus)}</div>
@@ -582,48 +755,47 @@
         });
     }
 
-    // 2. Switch Role Logic
+    // 2. Tab & Role Logic
+    function switchTab(viewId) {
+        document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(`tab-${viewId}`).classList.add('active');
+
+        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(`view-${viewId}`).classList.add('active');
+    }
+
+    function switchView(viewId) {
+        switchTab(viewId);
+    }
+
     function switchRole() {
         const select = document.getElementById('role-select');
         currentRole = select.value;
         const data = config[currentRole];
 
-        // Change Body Theme
         document.body.className = data.theme;
-
-        // Update Labels
         document.getElementById('label-input1').innerHTML = data.labels.input1;
         document.getElementById('label-input2').innerHTML = data.labels.input2;
         document.getElementById('label-total').innerText = data.labels.total;
         document.getElementById('footer-note').innerText = data.labels.footer;
-        document.getElementById('homerun-desc').innerText = data.labels.homerunDesc;
 
-        // Update Hint logic display text
         const hintSpan = document.getElementById('hint-calc');
-        if (currentRole === 'ca') {
-             hintSpan.innerHTML = `(自動換算 50%: <span id="val-calc-display" style="color: var(--accent-gold); font-weight: bold;">$0</span>)`;
-        } else {
-             hintSpan.innerHTML = `(自動換算 50%: <span id="val-calc-display" style="color: var(--accent-gold); font-weight: bold;">$0</span>)`;
-        }
+        hintSpan.innerHTML = `(自動換算 50%: <span id="val-calc-display" style="color: var(--accent-gold); font-weight: bold;">$0</span>)`;
 
-        // Re-render chart rows
         renderChart();
-        
-        // Recalculate
-        calculateBonus();
+        calculateBonus(); // Recalc top panel
+        calculateAnnual(); // Recalc bottom panel
     }
 
-    // 3. Calculation Logic
+    // 3. Top Panel Calculation Logic (View 1)
     function calculateBonus() {
         const v1 = parseFloat(document.getElementById('input-1').value) || 0;
         const v2 = parseFloat(document.getElementById('input-2').value) || 0;
         const data = config[currentRole];
 
-        // Handle the secondary input display (50% or 100%)
         const secondaryVal = data.calcDisplay(v2);
         document.getElementById('val-calc-display').innerText = '$' + formatMoney(secondaryVal);
 
-        // Total
         const total = data.calcLogic(v1, v2);
         document.getElementById('total-val').innerText = '$' + formatMoney(total);
 
@@ -631,16 +803,13 @@
         const rows = document.querySelectorAll('.bar-row[data-threshold]');
         let highestActiveRow = null;
         
-        // Find next goal
         const ascendingThresholds = [...data.thresholds].reverse().map(t => t.limit);
         
         let gap = 0;
         let nextTarget = 0;
         let reachedMax = false;
         const maxLimit = ascendingThresholds[ascendingThresholds.length - 1];
-        const minStart = ascendingThresholds[0];
 
-        // Gap Logic
         for (let t of ascendingThresholds) {
             if (total < t) {
                 gap = t - total;
@@ -650,7 +819,6 @@
         }
         if (total >= maxLimit) reachedMax = true;
 
-        // Gap UI Update
         const gapBox = document.getElementById('gap-box');
         const gapVal = document.getElementById('gap-val');
         const gapSub = document.getElementById('gap-subtext');
@@ -671,32 +839,20 @@
             gapSub.innerText = '目標: ' + (nextTarget/10000) + '萬';
         }
 
-        // Home Run Status Logic (Min Threshold Check)
-        const homerunBadge = document.getElementById('homerun-badge');
-        if (total >= minStart) {
-            homerunBadge.classList.add('active');
-        } else {
-            homerunBadge.classList.remove('active');
-        }
-
-        // Bar Fill Logic
         rows.forEach(row => {
             const threshold = parseFloat(row.getAttribute('data-threshold'));
             const barFill = row.querySelector('.bar-fill');
             
-            // Mark next goal
             if (threshold === nextTarget) {
                 row.classList.add('next-goal');
             } else {
                 row.classList.remove('next-goal');
             }
 
-            // Calculate fill percentage
             let percentage = (total / threshold) * 100;
             if (percentage > 100) percentage = 100;
             if (percentage < 0) percentage = 0;
             
-            // Active Tier Logic
             if (total >= threshold) {
                 if (!highestActiveRow || threshold > parseFloat(highestActiveRow.getAttribute('data-threshold'))) {
                     highestActiveRow = row;
@@ -712,12 +868,86 @@
         }
     }
 
+    // 4. Annual & Recruitment Bonus Calculation (View 2)
+    function calculateAnnual() {
+        const points = parseFloat(document.getElementById('input-points').value) || 0;
+        const progressBar = document.getElementById('recruit-progress');
+        const data = config[currentRole];
+        const thresholds = data.thresholds; // Descending order: [Max, ..., Min]
+        
+        // --- 1. Recruitment Progress ---
+        let progressPct = (points / 30) * 100;
+        if (progressPct > 100) progressPct = 100;
+        progressBar.style.width = progressPct + '%';
+
+        let multiplier = 0;
+        if (points >= 30) multiplier = 1.0;
+        else if (points >= 24) multiplier = 0.8;
+        else if (points >= 18) multiplier = 0.6;
+        else if (points >= 12) multiplier = 0.4;
+        else if (points >= 6) multiplier = 0.2;
+
+        document.getElementById('recruit-multiplier-display').innerText = (multiplier * 100) + '%';
+
+        // --- 2. Calculate Q1-Q4 Bonuses ---
+        let qBonuses = [];
+        let metQuarters = 0;
+        let sumQuarterly = 0;
+
+        for (let i = 1; i <= 4; i++) {
+            const fycInput = document.getElementById(`q${i}-fyc`);
+            const bonusDisplay = document.getElementById(`q${i}-bonus`);
+            const statusDisplay = document.getElementById(`q${i}-status`);
+            
+            const val = parseFloat(fycInput.value) || 0;
+            let bonus = 0;
+            
+            // Find bonus for this FYC
+            for (let t of thresholds) {
+                if (val >= t.limit) {
+                    bonus = t.bonus;
+                    break; 
+                }
+            }
+
+            bonusDisplay.innerText = '$' + formatMoney(bonus);
+            qBonuses.push(bonus);
+            sumQuarterly += bonus;
+
+            if (bonus > 0) {
+                metQuarters++;
+                statusDisplay.innerText = '✅ 達標';
+                statusDisplay.style.color = '#10b981';
+            } else {
+                statusDisplay.innerText = '未達標';
+                statusDisplay.style.color = '#ef4444';
+            }
+        }
+
+        document.getElementById('sum-quarterly').innerText = '$' + formatMoney(sumQuarterly);
+
+        // --- 3. Home Run Check ---
+        let homerunBonus = 0;
+        if (metQuarters === 4) {
+            homerunBonus = 15000;
+        }
+        document.getElementById('sum-homerun').innerText = '$' + formatMoney(homerunBonus);
+
+        // --- 4. Final Recruitment Bonus ---
+        let recruitBonus = (sumQuarterly + homerunBonus) * multiplier;
+        document.getElementById('sum-recruit').innerText = '$' + formatMoney(recruitBonus);
+
+        // --- 5. Grand Total ---
+        let grandTotal = sumQuarterly + homerunBonus + recruitBonus;
+        document.getElementById('sum-grand').innerText = '$' + formatMoney(grandTotal);
+    }
+
     // Init
     document.addEventListener('DOMContentLoaded', () => {
         renderChart();
         calculateBonus();
+        calculateAnnual(); // Init bottom panel
         
-        // Intro Animation
         setTimeout(() => {
              const bars = document.querySelectorAll('.bar-fill');
              bars.forEach(bar => bar.style.width = '2%');

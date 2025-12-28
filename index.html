@@ -315,7 +315,23 @@
             justify-content: space-between;
             color: white;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transition: background 0.5s ease;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .homerun-badge.active {
+            background: linear-gradient(135deg, var(--accent-gold), #d97706);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .homerun-badge.active .homerun-title,
+        .homerun-badge.active .homerun-desc,
+        .homerun-badge.active .homerun-amount,
+        .homerun-badge.active .homerun-icon {
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .homerun-left {
@@ -327,6 +343,7 @@
         .homerun-icon {
             font-size: 32px;
             color: var(--accent-gold);
+            transition: color 0.3s;
         }
 
         .homerun-title {
@@ -340,10 +357,36 @@
             color: #bae6fd;
         }
 
+        .homerun-right {
+            text-align: right;
+        }
+
         .homerun-amount {
             font-size: 28px;
             font-weight: 700;
             color: var(--accent-gold);
+            transition: color 0.3s;
+        }
+
+        .homerun-status {
+            font-size: 14px;
+            color: #fff;
+            background: rgba(255,255,255,0.25);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-top: 5px;
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: bold;
+        }
+
+        .homerun-badge.active .homerun-status {
+            opacity: 1;
+            transform: translateY(0);
+            background: #10b981; /* Success Green */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .footer-note {
@@ -365,6 +408,21 @@
                 content: '🎯';
                 right: 5px;
                 background: transparent;
+            }
+            .homerun-badge {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .homerun-right {
+                text-align: left;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .homerun-status {
+                margin-top: 0;
             }
         }
 
@@ -421,7 +479,7 @@
     </div>
 
     <!-- Home Run Bonus -->
-    <div class="homerun-badge">
+    <div class="homerun-badge" id="homerun-badge">
         <div class="homerun-left">
             <i class="fa-solid fa-baseball-bat-ball homerun-icon"></i>
             <div>
@@ -429,8 +487,11 @@
                 <div class="homerun-desc" id="homerun-desc">四季皆達標 (至少領取起領級距)</div>
             </div>
         </div>
-        <div class="homerun-amount">
-            + $15,000
+        <div class="homerun-right">
+            <div class="homerun-amount">+ $15,000</div>
+            <div class="homerun-status" id="homerun-status">
+                <i class="fa-solid fa-check-circle"></i> 本季達標
+            </div>
         </div>
     </div>
 
@@ -571,13 +632,13 @@
         let highestActiveRow = null;
         
         // Find next goal
-        // Thresholds are stored Descending in config (Top tier first in UI), but let's reverse for logic
         const ascendingThresholds = [...data.thresholds].reverse().map(t => t.limit);
         
         let gap = 0;
         let nextTarget = 0;
         let reachedMax = false;
         const maxLimit = ascendingThresholds[ascendingThresholds.length - 1];
+        const minStart = ascendingThresholds[0];
 
         // Gap Logic
         for (let t of ascendingThresholds) {
@@ -608,6 +669,14 @@
             gapVal.innerText = '$' + formatMoney(gap);
             gapVal.style.color = '#b45309';
             gapSub.innerText = '目標: ' + (nextTarget/10000) + '萬';
+        }
+
+        // Home Run Status Logic (Min Threshold Check)
+        const homerunBadge = document.getElementById('homerun-badge');
+        if (total >= minStart) {
+            homerunBadge.classList.add('active');
+        } else {
+            homerunBadge.classList.remove('active');
         }
 
         // Bar Fill Logic

@@ -50,10 +50,11 @@
             background: var(--card-bg);
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 40px; /* Reduced padding slightly for mobile */
+            padding: 40px; 
             position: relative;
-            overflow: hidden;
-            min-height: 800px; /* Ensure consistent height */
+            /* Changed to visible to prevent clipping of badges */
+            overflow: visible; 
+            min-height: 800px; 
         }
 
         /* Decorative Header Bar */
@@ -64,6 +65,8 @@
             height: 8px;
             background: linear-gradient(90deg, var(--primary-dark), var(--primary-light));
             transition: background 0.5s ease;
+            /* Added border-radius since parent overflow is visible */
+            border-radius: 24px 24px 0 0; 
         }
 
         header {
@@ -271,20 +274,28 @@
             z-index: 10;
         }
 
+        /* UPDATED: Next Goal Highlight - Centered Badge */
         .bar-row.next-goal {
             border: 2px dashed #cbd5e1;
             background-color: #f8fafc;
+            margin-top: 8px; /* Give space for the badge */
         }
         .bar-row.next-goal::after {
             content: '🎯 下一目標';
             position: absolute;
-            right: -80px;
-            background: #cbd5e1;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            border: 1px solid #cbd5e1;
             color: #475569;
-            padding: 2px 8px;
-            border-radius: 4px;
+            padding: 2px 12px;
+            border-radius: 12px;
             font-size: 12px;
             font-weight: bold;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            right: auto; /* Reset previous right positioning */
         }
 
         .bonus-label {
@@ -507,6 +518,17 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
+        .final-annual-bonus {
+            background: #ecfdf5;
+            border: 1px solid #10b981;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .footer-note {
             margin-top: 20px;
             text-align: center;
@@ -519,7 +541,8 @@
             .total-display, .gap-display { margin-top: 10px; }
             .quarters-grid { grid-template-columns: 1fr 1fr; }
             .grand-total, .final-annual-bonus { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .bar-row.next-goal::after { content: '🎯'; right: 5px; background: transparent; }
+            /* Mobile adjustment for centered badge */
+            .bar-row.next-goal::after { content: '🎯 下一目標'; right: auto; top: -12px; }
         }
 
     </style>

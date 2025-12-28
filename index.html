@@ -3,19 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>115年 主管組 超級個人獎金表</title>
+    <title>115年 超級個人獎金表 (整合版)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --primary-dark: #1e3a8a; /* Blue 900 */
-            --primary-light: #3b82f6; /* Blue 500 */
-            --accent-gold: #f59e0b; /* Amber 500 */
+            /* Default CA Theme (Sky Blue) */
+            --primary-dark: #0369a1; 
+            --primary-light: #0ea5e9;
+            --accent-gold: #f59e0b;
             --bg-color: #f0f9ff;
             --card-bg: #ffffff;
+            --text-main: #0c4a6e;
+            --bar-gradient-start: #38bdf8;
+        }
+
+        /* Manager Theme Class */
+        body.theme-manager {
+            --primary-dark: #1e3a8a; /* Blue 900 */
+            --primary-light: #3b82f6; /* Blue 500 */
             --text-main: #1e293b;
+            --bg-color: #eef2ff;
+            --bar-gradient-start: #60a5fa;
         }
 
         * { box-sizing: border-box; }
@@ -30,14 +41,15 @@
             align-items: center;
             min-height: 100vh;
             color: var(--text-main);
+            transition: background-color 0.5s ease;
         }
 
         .chart-container {
-            max-width: 700px;
+            max-width: 800px;
             width: 100%;
             background: var(--card-bg);
             border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(30, 58, 138, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             padding: 50px;
             position: relative;
             overflow: hidden;
@@ -50,6 +62,7 @@
             top: 0; left: 0; right: 0;
             height: 8px;
             background: linear-gradient(90deg, var(--primary-dark), var(--primary-light));
+            transition: background 0.5s ease;
         }
 
         header {
@@ -62,25 +75,34 @@
             margin: 0;
             font-size: 36px;
             font-weight: 700;
+            transition: color 0.3s;
         }
 
-        .subtitle {
-            color: #64748b;
-            font-size: 18px;
-            margin-top: 10px;
+        /* Role Switcher */
+        .role-switcher {
+            margin-top: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
         }
-        
-        .role-tag {
-            background: #dbeafe;
+
+        .role-select {
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 2px solid var(--primary-light);
+            background: white;
             color: var(--primary-dark);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .role-select:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         /* Calculator Panel */
@@ -91,9 +113,10 @@
             padding: 20px;
             margin-bottom: 30px;
             display: grid;
-            grid-template-columns: 1fr 1fr auto;
+            grid-template-columns: 1fr 1fr auto auto;
             gap: 15px;
-            align-items: end;
+            align-items: start;
+            transition: all 0.3s ease;
         }
 
         .input-group {
@@ -106,6 +129,9 @@
             font-size: 14px;
             color: #64748b;
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .input-group input {
@@ -117,6 +143,7 @@
             font-weight: bold;
             outline: none;
             transition: border-color 0.2s;
+            width: 100%;
         }
 
         .input-group input:focus {
@@ -126,21 +153,49 @@
         .total-display {
             background: var(--primary-dark);
             color: white;
-            padding: 10px 20px;
+            padding: 10px 15px;
             border-radius: 8px;
             text-align: center;
-            min-width: 140px;
+            min-width: 120px;
+            height: fit-content;
+            margin-top: 24px;
+            transition: background-color 0.3s;
         }
 
-        .total-label {
+        .gap-display {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fbbf24;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 120px;
+            height: fit-content;
+            margin-top: 24px;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+        
+        .gap-display.active {
+            opacity: 1;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+        }
+
+        .total-label, .gap-label {
             font-size: 12px;
-            opacity: 0.8;
+            opacity: 0.9;
             margin-bottom: 2px;
         }
 
-        .total-value {
-            font-size: 20px;
+        .total-value, .gap-value {
+            font-size: 18px;
             font-weight: 700;
+        }
+        
+        .gap-subtext {
+            font-size: 10px;
+            margin-top: 2px;
+            color: #d97706;
         }
 
         /* Chart Rows */
@@ -171,6 +226,23 @@
             z-index: 10;
         }
 
+        /* Next Goal Highlight */
+        .bar-row.next-goal {
+            border: 2px dashed #cbd5e1;
+            background-color: #f8fafc;
+        }
+        .bar-row.next-goal::after {
+            content: '🎯 下一目標';
+            position: absolute;
+            right: -80px;
+            background: #cbd5e1;
+            color: #475569;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
         /* Y-Axis Label (Bonus) */
         .bonus-label {
             text-align: right;
@@ -181,12 +253,7 @@
             align-items: center;
             justify-content: flex-end;
             gap: 5px;
-        }
-        
-        .bonus-unit {
-            font-size: 12px;
-            color: #94a3b8;
-            font-weight: normal;
+            transition: color 0.3s;
         }
 
         /* The Bar */
@@ -201,7 +268,7 @@
 
         .bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, #60a5fa, var(--primary-dark));
+            background: linear-gradient(90deg, var(--bar-gradient-start), var(--primary-dark));
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -210,8 +277,8 @@
             color: white;
             font-weight: bold;
             font-size: 14px;
-            width: 0; /* Animated */
-            transition: width 0.5s ease-out;
+            width: 0;
+            transition: width 0.5s ease-out, background 0.5s ease;
             position: relative;
         }
         
@@ -220,18 +287,17 @@
             background: linear-gradient(90deg, #fbbf24, #d97706);
         }
         .top-tier .bonus-label {
-            color: #d97706;
+            color: #d97706 !important;
         }
 
         /* Active Tier Text Color Change */
         .bar-row.active-tier .bonus-label {
-            color: #d97706;
+            color: #d97706 !important;
         }
         .bar-row.active-tier .bar-fill {
             background: linear-gradient(90deg, #fbbf24, #d97706);
         }
 
-        /* FYC Threshold Label (Inside or beside bar) */
         .fyc-threshold {
             font-size: 16px;
             color: #475569;
@@ -241,7 +307,7 @@
         /* Home Run Bonus Badge */
         .homerun-badge {
             margin-top: 40px;
-            background: linear-gradient(135deg, #1e293b, #0f172a);
+            background: linear-gradient(135deg, var(--text-main), var(--primary-dark));
             border-radius: 16px;
             padding: 25px;
             display: flex;
@@ -249,6 +315,7 @@
             justify-content: space-between;
             color: white;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: background 0.5s ease;
         }
 
         .homerun-left {
@@ -270,7 +337,7 @@
         
         .homerun-desc {
             font-size: 14px;
-            color: #94a3b8;
+            color: #bae6fd;
         }
 
         .homerun-amount {
@@ -279,106 +346,78 @@
             color: var(--accent-gold);
         }
 
-        /* Footer */
         .footer-note {
             margin-top: 20px;
             text-align: center;
             font-size: 13px;
-            color: #94a3b8;
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .calculator-panel {
+                grid-template-columns: 1fr;
+            }
+            .total-display, .gap-display {
+                margin-top: 10px;
+            }
+            .bar-row.next-goal::after {
+                content: '🎯';
+                right: 5px;
+                background: transparent;
+            }
         }
 
     </style>
 </head>
-<body>
+<body class="theme-ca"> <!-- Default Theme -->
 
 <div class="chart-container">
     <header>
         <h1>115年 超級個人獎金表</h1>
-        <div class="subtitle">
-            <span class="role-tag">主管組</span>
-            <span>(行銷/業務主管，不含處經理)</span>
+        <div class="role-switcher">
+            <span style="color: #64748b;">目前身分：</span>
+            <select id="role-select" class="role-select" onchange="switchRole()">
+                <option value="ca">CA 組 (CA、RSA、HRA)</option>
+                <option value="manager">主管組 (主任階以上，不含處經理)</option>
+            </select>
         </div>
     </header>
 
     <!-- Calculator Section -->
     <div class="calculator-panel">
         <div class="input-group">
-            <label><i class="fa-solid fa-user"></i> 主任個人 FYC</label>
-            <input type="number" id="input-personal" placeholder="輸入金額" oninput="calculateBonus()">
+            <label id="label-input1"><i class="fa-solid fa-user"></i> 個人季核實 FYC</label>
+            <input type="number" id="input-1" placeholder="輸入金額" oninput="calculateBonus()">
         </div>
         <div class="input-group">
-            <label><i class="fa-solid fa-users"></i> 直轄組 FYC</label>
-            <input type="number" id="input-unit" placeholder="輸入金額" oninput="calculateBonus()">
+            <label id="label-input2"><i class="fa-solid fa-user-plus"></i> 被增員者 FYC (自動 50%)</label>
+            <input type="number" id="input-2" placeholder="輸入金額" oninput="calculateBonus()">
+            <div id="hint-calc" style="font-size: 12px; color: #64748b; text-align: right; margin-top: 2px;">
+                (換算後: <span id="val-calc-display" style="color: var(--accent-gold); font-weight: bold;">$0</span>)
+            </div>
         </div>
         <div class="total-display">
-            <div class="total-label">預估合計 FYC</div>
+            <div class="total-label" id="label-total">個人季專案 FYC</div>
             <div class="total-value" id="total-val">$0</div>
+        </div>
+        <!-- GAP DISPLAY -->
+        <div class="gap-display" id="gap-box">
+            <div class="gap-label">距離下一門檻</div>
+            <div class="gap-value" id="gap-val">加油!</div>
+            <div class="gap-subtext" id="gap-subtext"></div>
         </div>
     </div>
 
-    <div class="chart-grid">
-        <!-- Header Row -->
+    <div class="chart-grid" id="chart-grid">
+        <!-- Header -->
         <div class="bar-row" style="margin-bottom: 5px; padding: 0 10px;">
             <div style="text-align: right; color: #64748b; font-size: 14px;">季獎金</div>
             <div style="padding-left: 10px; color: #64748b; font-size: 14px;">達成進度</div>
             <div style="color: #64748b; font-size: 14px;">門檻標準</div>
         </div>
-
-        <!-- Tier 6: 1320000 -->
-        <div class="bar-row top-tier" data-threshold="1320000">
-            <div class="bonus-label">$51,000</div>
-            <div class="bar-track">
-                <div class="bar-fill" style="width: 0%;">
-                    <i class="fa-solid fa-crown" style="margin-right: 5px; margin-left: 5px;"></i>
-                </div>
-            </div>
-            <div class="fyc-threshold">132 萬 +</div>
-        </div>
-
-        <!-- Tier 5: 1100000 -->
-        <div class="bar-row" data-threshold="1100000">
-            <div class="bonus-label">$42,500</div>
-            <div class="bar-track">
-                <div class="bar-fill" style="width: 0%;"></div>
-            </div>
-            <div class="fyc-threshold">110 萬</div>
-        </div>
-
-        <!-- Tier 4: 880000 -->
-        <div class="bar-row" data-threshold="880000">
-            <div class="bonus-label">$34,000</div>
-            <div class="bar-track">
-                <div class="bar-fill" style="width: 0%;"></div>
-            </div>
-            <div class="fyc-threshold">88 萬</div>
-        </div>
-
-        <!-- Tier 3: 660000 -->
-        <div class="bar-row" data-threshold="660000">
-            <div class="bonus-label">$25,500</div>
-            <div class="bar-track">
-                <div class="bar-fill" style="width: 0%;"></div>
-            </div>
-            <div class="fyc-threshold">66 萬</div>
-        </div>
-
-        <!-- Tier 2: 440000 -->
-        <div class="bar-row" data-threshold="440000">
-            <div class="bonus-label">$17,000</div>
-            <div class="bar-track">
-                <div class="bar-fill" style="width: 0%;"></div>
-            </div>
-            <div class="fyc-threshold">44 萬</div>
-        </div>
-
-        <!-- Tier 1: 220000 -->
-        <div class="bar-row" data-threshold="220000">
-            <div class="bonus-label">$8,500</div>
-            <div class="bar-track">
-                <div class="bar-fill" style="width: 0%;"></div>
-            </div>
-            <div class="fyc-threshold">22 萬</div>
-        </div>
+        
+        <!-- Rows will be injected by JS -->
     </div>
 
     <!-- Home Run Bonus -->
@@ -387,7 +426,7 @@
             <i class="fa-solid fa-baseball-bat-ball homerun-icon"></i>
             <div>
                 <div class="homerun-title">超級全壘打獎金</div>
-                <div class="homerun-desc">四季皆達標 (至少領取 $8,500 級距)</div>
+                <div class="homerun-desc" id="homerun-desc">四季皆達標 (至少領取起領級距)</div>
             </div>
         </div>
         <div class="homerun-amount">
@@ -395,75 +434,227 @@
         </div>
     </div>
 
-    <div class="footer-note">
-        * 本試算僅供參考，實際「個人季專案 FYC」計算方式請依公司公告為準 (含個人核實 FYC + 增員加碼 FYC)。
+    <div class="footer-note" id="footer-note">
+        * 增員加碼 FYC = 您的被增員者個人季核實 FYC × 50%。
     </div>
 </div>
 
 <script>
+    // Data Configuration
+    const config = {
+        ca: {
+            theme: 'theme-ca',
+            labels: {
+                input1: '<i class="fa-solid fa-user"></i> 個人季核實 FYC',
+                input2: '<i class="fa-solid fa-user-plus"></i> 被增員者 FYC',
+                hint2: '(自動換算 50%: ',
+                total: '個人季專案 FYC',
+                footer: '* 增員加碼 FYC = 您的被增員者個人季核實 FYC × 50%。',
+                homerunDesc: '四季皆達標 (至少領取 $4,500 級距)'
+            },
+            thresholds: [
+                { limit: 720000, bonus: 27000, label: '72 萬 +' },
+                { limit: 600000, bonus: 22500, label: '60 萬' },
+                { limit: 480000, bonus: 18000, label: '48 萬' },
+                { limit: 360000, bonus: 13500, label: '36 萬' },
+                { limit: 240000, bonus: 9000, label: '24 萬' },
+                { limit: 120000, bonus: 4500, label: '12 萬' }
+            ],
+            calcLogic: (v1, v2) => v1 + (v2 * 0.5),
+            calcDisplay: (v2) => v2 * 0.5
+        },
+        manager: {
+            theme: 'theme-manager',
+            labels: {
+                input1: '<i class="fa-solid fa-user"></i> 主任個人 FYC',
+                input2: '<i class="fa-solid fa-users"></i> 直轄組 FYC',
+                hint2: '(自動換算 50%: ',
+                total: '預估合計 FYC',
+                footer: '* 本試算僅供參考，實際「個人季專案 FYC」計算方式請依公司公告為準 (含個人核實 FYC + 增員加碼 FYC)。',
+                homerunDesc: '四季皆達標 (至少領取 $8,500 級距)'
+            },
+            thresholds: [
+                { limit: 1320000, bonus: 51000, label: '132 萬 +' },
+                { limit: 1100000, bonus: 42500, label: '110 萬' },
+                { limit: 880000, bonus: 34000, label: '88 萬' },
+                { limit: 660000, bonus: 25500, label: '66 萬' },
+                { limit: 440000, bonus: 17000, label: '44 萬' },
+                { limit: 220000, bonus: 8500, label: '22 萬' }
+            ],
+            calcLogic: (v1, v2) => v1 + (v2 * 0.5),
+            calcDisplay: (v2) => v2 * 0.5
+        }
+    };
+
+    let currentRole = 'ca';
+
     function formatMoney(num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    function calculateBonus() {
-        // 1. Get Inputs
-        const personal = parseFloat(document.getElementById('input-personal').value) || 0;
-        const unit = parseFloat(document.getElementById('input-unit').value) || 0;
-        const total = personal + unit;
+    // 1. Initialize & Render Rows
+    function renderChart() {
+        const grid = document.getElementById('chart-grid');
+        // Keep header, remove rows
+        const header = grid.firstElementChild;
+        grid.innerHTML = '';
+        grid.appendChild(header);
 
-        // 2. Update Total Display
+        const roleData = config[currentRole];
+        
+        roleData.thresholds.forEach((t, index) => {
+            const isTop = index === 0;
+            const row = document.createElement('div');
+            row.className = `bar-row ${isTop ? 'top-tier' : ''}`;
+            row.setAttribute('data-threshold', t.limit);
+            
+            row.innerHTML = `
+                <div class="bonus-label">$${formatMoney(t.bonus)}</div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: 0%;">
+                        ${isTop ? '<i class="fa-solid fa-crown" style="margin-right: 5px; margin-left: 5px;"></i>' : ''}
+                    </div>
+                </div>
+                <div class="fyc-threshold">${t.label}</div>
+            `;
+            grid.appendChild(row);
+        });
+    }
+
+    // 2. Switch Role Logic
+    function switchRole() {
+        const select = document.getElementById('role-select');
+        currentRole = select.value;
+        const data = config[currentRole];
+
+        // Change Body Theme
+        document.body.className = data.theme;
+
+        // Update Labels
+        document.getElementById('label-input1').innerHTML = data.labels.input1;
+        document.getElementById('label-input2').innerHTML = data.labels.input2;
+        document.getElementById('label-total').innerText = data.labels.total;
+        document.getElementById('footer-note').innerText = data.labels.footer;
+        document.getElementById('homerun-desc').innerText = data.labels.homerunDesc;
+
+        // Update Hint logic display text
+        const hintSpan = document.getElementById('hint-calc');
+        if (currentRole === 'ca') {
+             hintSpan.innerHTML = `(自動換算 50%: <span id="val-calc-display" style="color: var(--accent-gold); font-weight: bold;">$0</span>)`;
+        } else {
+             hintSpan.innerHTML = `(自動換算 50%: <span id="val-calc-display" style="color: var(--accent-gold); font-weight: bold;">$0</span>)`;
+        }
+
+        // Re-render chart rows
+        renderChart();
+        
+        // Recalculate
+        calculateBonus();
+    }
+
+    // 3. Calculation Logic
+    function calculateBonus() {
+        const v1 = parseFloat(document.getElementById('input-1').value) || 0;
+        const v2 = parseFloat(document.getElementById('input-2').value) || 0;
+        const data = config[currentRole];
+
+        // Handle the secondary input display (50% or 100%)
+        const secondaryVal = data.calcDisplay(v2);
+        document.getElementById('val-calc-display').innerText = '$' + formatMoney(secondaryVal);
+
+        // Total
+        const total = data.calcLogic(v1, v2);
         document.getElementById('total-val').innerText = '$' + formatMoney(total);
 
-        // 3. Logic for Rows
+        // Row Logic
         const rows = document.querySelectorAll('.bar-row[data-threshold]');
         let highestActiveRow = null;
+        
+        // Find next goal
+        // Thresholds are stored Descending in config (Top tier first in UI), but let's reverse for logic
+        const ascendingThresholds = [...data.thresholds].reverse().map(t => t.limit);
+        
+        let gap = 0;
+        let nextTarget = 0;
+        let reachedMax = false;
+        const maxLimit = ascendingThresholds[ascendingThresholds.length - 1];
 
+        // Gap Logic
+        for (let t of ascendingThresholds) {
+            if (total < t) {
+                gap = t - total;
+                nextTarget = t;
+                break;
+            }
+        }
+        if (total >= maxLimit) reachedMax = true;
+
+        // Gap UI Update
+        const gapBox = document.getElementById('gap-box');
+        const gapVal = document.getElementById('gap-val');
+        const gapSub = document.getElementById('gap-subtext');
+
+        if (total === 0) {
+            gapBox.classList.remove('active');
+            gapVal.innerText = '$' + formatMoney(ascendingThresholds[0]);
+            gapSub.innerText = '起領門檻';
+        } else if (reachedMax) {
+            gapBox.classList.add('active');
+            gapVal.innerText = '已達最高階';
+            gapVal.style.color = '#d97706';
+            gapSub.innerText = '恭喜!';
+        } else {
+            gapBox.classList.add('active');
+            gapVal.innerText = '$' + formatMoney(gap);
+            gapVal.style.color = '#b45309';
+            gapSub.innerText = '目標: ' + (nextTarget/10000) + '萬';
+        }
+
+        // Bar Fill Logic
         rows.forEach(row => {
             const threshold = parseFloat(row.getAttribute('data-threshold'));
             const barFill = row.querySelector('.bar-fill');
             
-            // Calculate width percentage relative to THIS threshold
-            // Max out at 100% if exceeded
+            // Mark next goal
+            if (threshold === nextTarget) {
+                row.classList.add('next-goal');
+            } else {
+                row.classList.remove('next-goal');
+            }
+
+            // Calculate fill percentage
             let percentage = (total / threshold) * 100;
             if (percentage > 100) percentage = 100;
             if (percentage < 0) percentage = 0;
-
-            // Only show fill if we are close or above
-            // Visual logic: Fill based on next tier logic or absolute?
-            // Let's do absolute fill for visual effect
-            // Scale: 1.5M is max width for visual consistency
-            const maxScale = 1500000;
-            let visualWidth = (total / maxScale) * 100; 
             
-            // If the row threshold is met
+            // Active Tier Logic
             if (total >= threshold) {
                 if (!highestActiveRow || threshold > parseFloat(highestActiveRow.getAttribute('data-threshold'))) {
                     highestActiveRow = row;
                 }
             }
             
-            // For visual bars, let's make them fill up relative to their own goal to look satisfying
-            // Or relative to the max tier? Let's use relative to threshold for "Progress Bar" feel
             barFill.style.width = percentage + '%';
-            
-            // Reset active class
             row.classList.remove('active-tier');
         });
 
-        // 4. Highlight the highest achieved tier
         if (highestActiveRow) {
             highestActiveRow.classList.add('active-tier');
         }
     }
 
-    // Initial Animation
+    // Init
     document.addEventListener('DOMContentLoaded', () => {
-        // Set initial bars to a small width just for looks
-        const bars = document.querySelectorAll('.bar-fill');
-        bars.forEach(bar => {
-            bar.style.width = '2%';
-        });
+        renderChart();
+        calculateBonus();
+        
+        // Intro Animation
+        setTimeout(() => {
+             const bars = document.querySelectorAll('.bar-fill');
+             bars.forEach(bar => bar.style.width = '2%');
+        }, 100);
     });
+
 </script>
 
 </body>
